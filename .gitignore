@@ -1,0 +1,4 @@
+# Project exclude paths
+/ms-client/target/
+/ms-phone/target/
+/ms-ransom/target/
