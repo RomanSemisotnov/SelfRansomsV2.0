@@ -1,4 +1,4 @@
-package ru.marketboost.phone.models.requests;
+package ru.marketboost.library.common.http.models.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeletePhoneRequest {
-
-    private List<Long> ids;
-
+public class MultiplyPhoneResponse {
+    private List<PhoneResponse> phones;
 }

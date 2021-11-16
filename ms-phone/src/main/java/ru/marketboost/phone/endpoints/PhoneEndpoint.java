@@ -5,14 +5,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.marketboost.phone.interfaces.IPhoneService;
-import ru.marketboost.phone.models.requests.DeletePhoneRequest;
-import ru.marketboost.phone.models.requests.IncommingCallRequest;
-import ru.marketboost.phone.models.requests.StorePhoneRequest;
-import ru.marketboost.phone.models.responses.PhoneResponse;
+import ru.marketboost.library.common.http.models.requests.DeletePhoneRequest;
+import ru.marketboost.library.common.http.models.requests.StorePhoneRequest;
+import ru.marketboost.library.common.http.models.responses.MultiplyPhoneResponse;
+import ru.marketboost.library.common.http.models.responses.PhoneResponse;
+import ru.marketboost.library.common.interfaces.IPhoneService;
 import ru.marketboost.phone.services.PhoneService;
 
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 public class PhoneEndpoint implements IPhoneService {
@@ -21,21 +21,14 @@ public class PhoneEndpoint implements IPhoneService {
     private PhoneService phoneService;
 
     @Override
-    @PostMapping(value = INCOMING_CALL, produces = "application/json")
-    public String incommingCall(@RequestBody IncommingCallRequest ransomRequest) {
-        if(!Objects.equals(ransomRequest.getEvent(), "NOTIFY_START")) {
-            return "event must be 'NOTIFY_START'";
-        }
-        phoneService.setLast4DigitsToPhone(ransomRequest.getCalled_did(), ransomRequest.getCaller_id());
-
-        return "ok";
-    }
-
-    @Override
     @GetMapping(value = PHONE, produces = "application/json")
-    public PhoneResponse findAll() {
-        return PhoneResponse.builder()
-                .phones(phoneService.findAll())
+    public MultiplyPhoneResponse findAll() {
+        return MultiplyPhoneResponse.builder()
+                .phones(phoneService.findAll()
+                        .stream()
+                        .map(phone -> PhoneResponse.builder().number(phone.getNumber()).build())
+                        .collect(Collectors.toList())
+                )
                 .build();
     }
 
@@ -53,6 +46,5 @@ public class PhoneEndpoint implements IPhoneService {
         phoneService.deleteByIds(incommingCallRequest.getIds());
         return "ok";
     }
-
 
 }

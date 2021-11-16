@@ -18,4 +18,19 @@
         </sql>
     </changeSet>
 
+    <changeSet author="Roman.Semisotnov" id="2">
+        <comment>Добавление таблицы phone_codes</comment>
+        <sql>
+            create table if not exists phone_codes
+            (
+            id serial primary key,
+            code varchar(8) not null,
+            phone_id int not null,
+            created_at timestamp not null,
+            updated_at timestamp,
+            CONSTRAINT phones FOREIGN KEY(phone_id) REFERENCES phones(id)
+            );
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

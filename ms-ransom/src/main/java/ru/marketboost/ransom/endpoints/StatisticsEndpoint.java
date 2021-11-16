@@ -48,7 +48,7 @@ public class StatisticsEndpoint {
     }
 
     @GetMapping(value = "/stat/wb", produces = "application/json")
-    public Map<String, Stat> get() throws IOException {
+    public String get() throws IOException {
         Map<String, String> replacingMap = getReplacingMap();
 
         Map<String, Stat> finalCsv = loadObjectList("new_stat.csv");
@@ -84,7 +84,7 @@ public class StatisticsEndpoint {
                 finalCsv.values().stream().filter(obj -> !obj.getIsNeedToRecheck()).collect(Collectors.toList()),
                 replacingMap
         );
-        return Map.of();
+        return "ok";
     }
 
     public Map<String, Stat> loadObjectList(String fileName) throws IOException {

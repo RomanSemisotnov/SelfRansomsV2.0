@@ -1,4 +1,4 @@
-package ru.marketboost.phone.models.requests;
+package ru.marketboost.library.common.http.models.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

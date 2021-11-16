@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="ms-common-library" />
         <module name="ms-ransom" />
         <module name="ms-phone" />
         <module name="ms-client" />
@@ -16,6 +17,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ms-client" options="-parameters" />
+      <module name="ms-common-library" options="-parameters" />
       <module name="ms-phone" options="-parameters" />
       <module name="ms-ransom" options="-parameters" />
     </option>
