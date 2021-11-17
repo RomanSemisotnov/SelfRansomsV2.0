@@ -6,8 +6,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +25,7 @@ public class Phone extends BaseEntity {
     @Column(name = "phone_number")
     private String number;
 
+    @OneToMany(mappedBy = "phone", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PhoneCode> phoneCodes;
 
     public Optional<String> getLastCode() {
@@ -36,7 +39,7 @@ public class Phone extends BaseEntity {
             return Optional.empty();
         }
 
-        return Optional.of(phoneCodes.get(0).getCode());
+        return Optional.of(phoneCodes.get(phoneCodes.size() - 1).getCode());
     }
 
 }

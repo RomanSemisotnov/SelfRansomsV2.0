@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RansomRequest {
+    private String phoneNumber;
     private String search;
 }

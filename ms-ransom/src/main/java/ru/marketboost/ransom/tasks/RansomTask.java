@@ -37,7 +37,7 @@ public class RansomTask extends BaseTask implements Runnable {
 
             LoginPage loginPage = homePageWithoutAuth.goToLoginPage();
 
-            HomePage homePageWithAuth = loginPage.doLogin("9859042323");
+            HomePage homePageWithAuth = loginPage.doLogin(ransomRequest.getPhoneNumber());
 
             ProfilePage profilePageWithAuth = homePageWithAuth.goToProfilePage();
 

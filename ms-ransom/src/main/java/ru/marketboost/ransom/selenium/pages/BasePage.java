@@ -7,9 +7,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.context.ApplicationContext;
+import ru.marketboost.library.common.http.services.phones.PhoneCodeHttpService;
+import ru.marketboost.library.common.http.services.phones.PhoneHttpService;
 import ru.marketboost.ransom.exceptions.OneOfTwoElementNotFoundException;
 import ru.marketboost.ransom.services.captcha.SolveCaptchaService;
-import ru.marketboost.ransom.services.phone.PhoneService;
 import ru.marketboost.ransom.utils.Randomizer;
 
 import java.util.Objects;
@@ -28,7 +29,7 @@ public abstract class BasePage {
     protected final WebDriver driver;
     protected ApplicationContext applicationContext;
     protected SolveCaptchaService solveCaptchaService;
-    protected PhoneService phoneService;
+    protected PhoneCodeHttpService phoneCodeHttpService;
 
     public BasePage(WebDriver driver, ApplicationContext applicationContext) {
         this.driver = driver;
@@ -38,7 +39,7 @@ public abstract class BasePage {
 
     private void init() {
         solveCaptchaService = applicationContext.getBean(SolveCaptchaService.class);
-        phoneService = applicationContext.getBean(PhoneService.class);
+        phoneCodeHttpService = applicationContext.getBean(PhoneCodeHttpService.class);
     }
 
     protected Optional<WebElement> waitLoadingElem(By location) {

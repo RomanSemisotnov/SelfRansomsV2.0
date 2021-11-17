@@ -6,6 +6,8 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.context.ApplicationContext;
+import ru.marketboost.library.common.http.models.requests.GetLastCodeRequest;
+import ru.marketboost.library.common.http.models.responses.GetLastCodeResponse;
 import ru.marketboost.ransom.exceptions.CantSolveALotTimeCaptchaException;
 
 import java.util.Optional;
@@ -44,9 +46,13 @@ public class LoginPage extends BasePage {
                 checkAndPassCaptcha();
             }
 
-            String getPassCode = phoneService.getPassCode();
+            GetLastCodeResponse lastCodeResponse = phoneCodeHttpService.getLastCode(
+                    GetLastCodeRequest.builder()
+                            .number(phoneNumber)
+                            .build()
+            );
 
-            moveAndClickAndFill(submitPhoneCode, getPassCode);
+            moveAndClickAndFill(submitPhoneCode, lastCodeResponse.getCode());
 
             return new HomePage(driver, applicationContext);
         } catch (Exception e) {

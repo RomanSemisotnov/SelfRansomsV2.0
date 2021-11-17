@@ -30,7 +30,7 @@ public class PhoneCodeService {
                 .orElseThrow(() -> new MsModelNotFoundException(Phone.class, Tuple.of("number", myPhoneNumber)));
 
         PhoneCode newPhoneCode = PhoneCode.builder()
-                .phoneId(phone.getId().toString())
+                .phone(phone)
                 .code(marketPhoneNumber.substring(marketPhoneNumber.length() - 4))
                 .build();
 

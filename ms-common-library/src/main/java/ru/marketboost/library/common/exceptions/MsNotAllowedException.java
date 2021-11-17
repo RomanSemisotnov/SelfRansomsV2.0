@@ -3,7 +3,7 @@ package ru.marketboost.library.common.exceptions;
 public class MsNotAllowedException extends MicroServiceException {
 
     public MsNotAllowedException() {
-        super("нет доступа");
+        super("Нет доступа");
     }
 
     public MsNotAllowedException(String message) {

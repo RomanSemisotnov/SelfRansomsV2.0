@@ -31,9 +31,4 @@ public class RansomEndpoint implements IRunsomService {
         return "ok";
     }
 
-    @PostMapping(value = "/test", produces = "application/json")
-    public String test() {
-        return "testing yopta";
-    }
-
 }

@@ -3,9 +3,7 @@ package ru.marketboost.phone.hibernate.models;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 
 @Data
@@ -16,13 +14,10 @@ import javax.persistence.OneToMany;
 @EqualsAndHashCode(callSuper = true)
 public class PhoneCode extends BaseEntity {
 
-    @Column(name = "value")
+    @Column(name = "code")
     private String code;
 
-    @Column(name = "phone_id")
-    private String phoneId;
-
-    @OneToMany
+    @ManyToOne(fetch = FetchType.EAGER)
     private Phone phone;
 
 }
