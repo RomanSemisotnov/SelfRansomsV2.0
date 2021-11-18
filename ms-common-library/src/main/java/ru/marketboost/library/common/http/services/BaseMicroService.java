@@ -86,7 +86,7 @@ public abstract class BaseMicroService {
         if (errorResponse == null || errorResponse.getClassName() == null
                 || errorResponse.getClassName().isEmpty()
                 || !exceptionFactory.containsKey(errorResponse.getClassName())) {
-            return new MicroServiceException(body);
+            return new MsInternalErrorException(body);
         }
 
         return exceptionFactory.get(errorResponse.getClassName()).apply(errorResponse);

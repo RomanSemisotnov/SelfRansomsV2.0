@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Data
 @Builder
@@ -14,6 +15,6 @@ import java.time.Instant;
 public class PhoneResponse {
     private Long id;
     private String number;
-    private String lastCode;
+    private Optional<LastCodeResponse> lastCode;
     private Instant createdAt;
 }

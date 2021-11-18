@@ -4,6 +4,7 @@ import io.vavr.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.marketboost.library.common.exceptions.MsAlreadyExistsException;
+import ru.marketboost.library.common.exceptions.MsModelNotFoundException;
 import ru.marketboost.phone.hibernate.models.Phone;
 import ru.marketboost.phone.hibernate.repositories.PhoneRepository;
 
@@ -32,6 +33,11 @@ public class PhoneService {
 
     public Phone getById(long id) {
         return phoneRepository.getById(id);
+    }
+
+    public Phone getNumber(String number) throws MsModelNotFoundException {
+        return phoneRepository.findByNumber(number)
+                .orElseThrow(() -> new MsModelNotFoundException(Phone.class, Tuple.of("number", number)));
     }
 
     public void deleteByIds(List<Long> ids) {

@@ -18,13 +18,6 @@ public class PhoneCodeService {
     @Autowired
     private PhoneRepository phoneRepository;
 
-    public String getLastCode(String number) throws MsModelNotFoundException {
-        Phone phone = phoneRepository.findByNumber(number)
-                .orElseThrow(() -> new MsModelNotFoundException(Phone.class, Tuple.of("number", number)));
-
-        return phone.getLastCode().orElse("");
-    }
-
     public Phone setLast4DigitsToPhone(String myPhoneNumber, String marketPhoneNumber) throws MsModelNotFoundException {
         Phone phone = phoneRepository.findByNumber(myPhoneNumber)
                 .orElseThrow(() -> new MsModelNotFoundException(Phone.class, Tuple.of("number", myPhoneNumber)));

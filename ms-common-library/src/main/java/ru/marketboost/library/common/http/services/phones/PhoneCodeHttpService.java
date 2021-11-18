@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.marketboost.library.common.exceptions.MicroServiceException;
-import ru.marketboost.library.common.http.models.requests.GetLastCodeRequest;
 import ru.marketboost.library.common.http.models.requests.IncommingCallRequest;
-import ru.marketboost.library.common.http.models.responses.GetLastCodeResponse;
 import ru.marketboost.library.common.http.services.BaseMicroService;
 import ru.marketboost.library.common.interfaces.IPhoneCodeService;
 
@@ -19,9 +17,10 @@ public class PhoneCodeHttpService extends BaseMicroService implements IPhoneCode
         super("localhost:8080", restTemplate);
     }
 
+
     @Override
-    public GetLastCodeResponse getLastCode(GetLastCodeRequest request) throws MicroServiceException {
-        return retry(() -> restTemplate.postForEntity(buildUrl(GET_LAST_CODE), request, GetLastCodeResponse.class).getBody());
+    public String testForZadarma(String param) {
+        throw new UnsupportedOperationException("this method need to check our API for Zadarma, not to internal use");
     }
 
     @Override

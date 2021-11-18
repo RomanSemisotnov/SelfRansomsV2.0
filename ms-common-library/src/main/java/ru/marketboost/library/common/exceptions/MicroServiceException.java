@@ -1,6 +1,7 @@
 package ru.marketboost.library.common.exceptions;
 
-public class MicroServiceException extends Exception {
+public abstract class MicroServiceException extends Exception {
+
     public MicroServiceException(Throwable throwable) {
         super(throwable);
     }

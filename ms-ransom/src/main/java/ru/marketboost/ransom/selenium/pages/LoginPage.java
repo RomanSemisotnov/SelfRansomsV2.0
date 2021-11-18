@@ -6,14 +6,17 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.context.ApplicationContext;
-import ru.marketboost.library.common.http.models.requests.GetLastCodeRequest;
-import ru.marketboost.library.common.http.models.responses.GetLastCodeResponse;
+import ru.marketboost.library.common.http.models.requests.GetPhoneRequest;
+import ru.marketboost.library.common.http.models.responses.LastCodeResponse;
 import ru.marketboost.ransom.exceptions.CantSolveALotTimeCaptchaException;
+import ru.marketboost.ransom.exceptions.CouldntGetRightPhoneCodeException;
 
+import java.time.Instant;
 import java.util.Optional;
 
 public class LoginPage extends BasePage {
 
+    private final int GET_CODE_TRY_NUMBER = 5;
     private final By phoneInput = By.xpath("//div[@class='login__phone form-block form-block--phone-dropdown']/div[@class='form-block__dropdown-wrap']/div[@class='form-block__input']/input[@class='input-item']");
     private final By loginByPhoneButton = By.id("requestCode");
     private final By captchaImg = By.className("form-block__captcha-img");
@@ -46,13 +49,30 @@ public class LoginPage extends BasePage {
                 checkAndPassCaptcha();
             }
 
-            GetLastCodeResponse lastCodeResponse = phoneCodeHttpService.getLastCode(
-                    GetLastCodeRequest.builder()
-                            .number(phoneNumber)
-                            .build()
-            );
+            LastCodeResponse realLastCode = null;
+            int tryN = 0;
+            while (tryN < GET_CODE_TRY_NUMBER && realLastCode == null) {
+                Optional<LastCodeResponse> lastCodeResponse = phoneHttpService.get(
+                        GetPhoneRequest.builder()
+                                .number(phoneNumber)
+                                .build()
+                ).getLastCode();
 
-            moveAndClickAndFill(submitPhoneCode, lastCodeResponse.getCode());
+                if (lastCodeResponse.isPresent() && lastCodeResponse.get().getCreatedAt().isAfter(Instant.now().minusMillis(15 * 1000))) {
+                    realLastCode = lastCodeResponse.get();
+                }
+
+                tryN++;
+                Thread.sleep(2500);
+            }
+
+            if (realLastCode == null) {
+                throw new CouldntGetRightPhoneCodeException(
+                        String.format("Cant get not expired phone code on login page by %s times", GET_CODE_TRY_NUMBER)
+                );
+            }
+
+            moveAndClickAndFill(submitPhoneCode, realLastCode.getCode());
 
             return new HomePage(driver, applicationContext);
         } catch (Exception e) {

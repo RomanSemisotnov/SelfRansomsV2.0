@@ -5,14 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetLastCodeResponse {
+public class LastCodeResponse {
 
     private Long id;
-    private String number;
     private String code;
+    private Instant createdAt;
 
 }

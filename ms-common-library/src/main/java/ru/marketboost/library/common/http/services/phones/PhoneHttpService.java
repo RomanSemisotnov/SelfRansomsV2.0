@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.marketboost.library.common.exceptions.MicroServiceException;
 import ru.marketboost.library.common.http.models.requests.DeletePhoneRequest;
+import ru.marketboost.library.common.http.models.requests.GetPhoneRequest;
 import ru.marketboost.library.common.http.models.requests.StorePhoneRequest;
 import ru.marketboost.library.common.http.models.responses.MultiplyPhoneResponse;
 import ru.marketboost.library.common.http.models.responses.PhoneResponse;
@@ -20,6 +21,11 @@ public class PhoneHttpService extends BaseMicroService implements IPhoneService 
     @Override
     public MultiplyPhoneResponse findAll() throws MicroServiceException {
         return retry(() -> restTemplate.postForEntity(buildUrl(PHONE_GET), new Object(), MultiplyPhoneResponse.class).getBody());
+    }
+
+    @Override
+    public PhoneResponse get(GetPhoneRequest request) throws MicroServiceException {
+        return retry(() -> restTemplate.postForEntity(buildUrl(PHONE_GET), request, PhoneResponse.class).getBody());
     }
 
     @Override

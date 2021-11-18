@@ -97,7 +97,7 @@ public class BaseHttpExceptionHandler {
                 requestBody);
         //пишем детальную информацию в другой лог
         log.error("exception was thrown", ex);
-        Sentry.captureException(new MicroServiceException(errorMessage, ex));
+        Sentry.captureException(new MsInternalErrorException(errorMessage, ex));
 
         //возвращаем пользователю ничего не значащую информацию об ошибке
         return new ResponseEntity<>(ErrorResponse.builder()

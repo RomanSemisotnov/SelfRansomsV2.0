@@ -28,7 +28,7 @@ public class Phone extends BaseEntity {
     @OneToMany(mappedBy = "phone", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PhoneCode> phoneCodes;
 
-    public Optional<String> getLastCode() {
+    public Optional<PhoneCode> getLastCode() {
         if (phoneCodes == null) {
             throw new IllegalStateException(String.format(
                     "Phone_codes in phone with id %s is null", id
@@ -39,7 +39,7 @@ public class Phone extends BaseEntity {
             return Optional.empty();
         }
 
-        return Optional.of(phoneCodes.get(phoneCodes.size() - 1).getCode());
+        return Optional.of(phoneCodes.get(phoneCodes.size() - 1));
     }
 
 }

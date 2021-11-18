@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetLastCodeRequest {
+public class GetPhoneRequest {
 
     private String number;
     private Long id;
