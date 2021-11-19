@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Optional;
 
@@ -24,7 +23,7 @@ class ApplicationConfig {
     public DataSource datasource() {
         return DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
-                .url("jdbc:postgresql://45.141.102.46:5432/ransom-client-db?serverTimezone=Europe/Moscow")
+                .url("jdbc:postgresql://45.142.36.57:5432/ransom-client-db?serverTimezone=Europe/Moscow")
                 .username("ransomphonepguser922")
                 .password("ransomphonepasspg432")
                 .build();
@@ -33,7 +32,7 @@ class ApplicationConfig {
     @Bean
     public DateTimeProvider mscDateTimeProvider() {
         return () -> Optional.of(LocalDateTime.now(
-                ZoneOffset.of("+06:00")
+                ZoneOffset.of("+03:00")
         ));
     }
 
