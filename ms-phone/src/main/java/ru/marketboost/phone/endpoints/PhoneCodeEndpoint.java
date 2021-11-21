@@ -2,6 +2,7 @@ package ru.marketboost.phone.endpoints;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.marketboost.library.common.exceptions.MsBadRequestException;
 import ru.marketboost.library.common.exceptions.MsModelNotFoundException;
 import ru.marketboost.library.common.http.models.requests.IncommingCallRequest;
 import ru.marketboost.library.common.interfaces.IPhoneCodeService;
@@ -24,9 +25,9 @@ public class PhoneCodeEndpoint implements IPhoneCodeService {
 
     @Override
     @PostMapping(value = INCOMING_CALL, produces = "application/json")
-    public String incommingCall(@RequestBody IncommingCallRequest ransomRequest) throws MsModelNotFoundException {
+    public String incommingCall(@RequestBody IncommingCallRequest ransomRequest) throws MsModelNotFoundException, MsBadRequestException {
         if (!Objects.equals(ransomRequest.getEvent(), "NOTIFY_START")) {
-            return "event must be 'NOTIFY_START'";
+            throw new MsBadRequestException("event must be NOTIFY_START");
         }
         phoneCodeService.setLast4DigitsToPhone(ransomRequest.getCalled_did(), ransomRequest.getCaller_id());
 

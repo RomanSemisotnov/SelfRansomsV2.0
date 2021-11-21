@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
-import ru.marketboost.ransom.utils.Randomizer;
+import ru.marketboost.library.common.utils.Randomizer;
 
 @Data
 @Builder

@@ -14,7 +14,7 @@ public class PhoneCodeHttpService extends BaseMicroService implements IPhoneCode
 
     @Autowired
     protected PhoneCodeHttpService(RestTemplate restTemplate) {
-        super("localhost:8080", restTemplate);
+        super("45.141.102.46:8080", restTemplate);
     }
 
 

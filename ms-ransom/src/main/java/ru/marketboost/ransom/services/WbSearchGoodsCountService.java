@@ -13,7 +13,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 import ru.marketboost.ransom.models.Stat;
-import ru.marketboost.ransom.utils.Randomizer;
+import ru.marketboost.library.common.utils.Randomizer;
 
 import java.io.FileWriter;
 import java.io.IOException;

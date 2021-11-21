@@ -11,6 +11,8 @@ import ru.marketboost.ransom.selenium.pages.HomePage;
 import ru.marketboost.ransom.selenium.pages.LoginPage;
 import ru.marketboost.ransom.selenium.pages.ProfilePage;
 
+import java.util.UUID;
+
 @Service
 @Scope(value = "prototype")
 public class RansomTask extends BaseTask implements Runnable {
@@ -30,44 +32,22 @@ public class RansomTask extends BaseTask implements Runnable {
     @Override
     public void run() {
         WebDriver driver = null;
+        UUID sessionId = UUID.randomUUID();
         try {
-            driver = driverFactory.getDriver();
+            driver = driverFactory.getDriver(ransomRequest.getProxyIp(), ransomRequest.getProxyPort(), ransomRequest.getProxyLogin(), ransomRequest.getProxyPass());
 
-            HomePage homePageWithoutAuth = new HomePage(driver, applicationContext);
+            // driver = driverFactory.getDriver();
 
-            LoginPage loginPage = homePageWithoutAuth.goToLoginPage();
+            HomePage homePageWithoutAuth = new HomePage(driver, applicationContext, sessionId);
 
-            HomePage homePageWithAuth = loginPage.doLogin(ransomRequest.getPhoneNumber());
+            homePageWithoutAuth.findArticle(ransomRequest.getSearch(), ransomRequest.getVendorCode());
 
-            ProfilePage profilePageWithAuth = homePageWithAuth.goToProfilePage();
+            // LoginPage loginPage = homePageWithoutAuth.goToLoginPage();
 
-            /*WebElement searchField = new WebDriverWait(driver, 60)
-                    .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='searchInput']")));
+            // HomePage homePageWithAuth = loginPage.doLogin(ransomRequest.getPhoneNumber());
 
-            new Actions(driver).moveToElement(searchField).click().perform();
+            //ProfilePage profilePageWithAuth = homePageWithAuth.goToProfilePage();
 
-            Thread.sleep(Randomizer.randomBetween(200, 400));
-
-            fillSearchFieldWithInterval(searchField, ransomRequest.getSearch());
-
-            WebElement searchButton = new WebDriverWait(driver, 20)
-                    .until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='applySearchBtn']")));
-            new Actions(driver).moveToElement(searchButton).click().perform();
-
-            List<WebElement> goods = new WebDriverWait(driver, 5)
-                    .until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//span[@class='goods-name']")));
-
-            Optional<WebElement> ourGood = goods
-                    .stream()
-                    .filter(s -> s.getAttribute("src").equals("https://images.wbstatic.net/c516x688/new/37760000/37769499-1.jpg"))
-                    .findFirst();
-
-            if (ourGood.isPresent()) {
-                new Actions(driver).moveToElement(ourGood.get()).click().perform();
-
-            } else {
-
-            }*/
             System.out.println(123);
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +55,6 @@ public class RansomTask extends BaseTask implements Runnable {
             if (driver != null)
                 driver.quit();
         }
-
     }
 
 }

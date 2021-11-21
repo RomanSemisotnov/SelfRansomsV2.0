@@ -12,4 +12,9 @@ import lombok.NoArgsConstructor;
 public class RansomRequest {
     private String phoneNumber;
     private String search;
+    private String proxyIp;
+    private String proxyPort;
+    private String proxyLogin;
+    private String proxyPass;
+    private String vendorCode;
 }

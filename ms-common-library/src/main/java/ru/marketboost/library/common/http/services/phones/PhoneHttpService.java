@@ -15,7 +15,7 @@ import ru.marketboost.library.common.interfaces.IPhoneService;
 public class PhoneHttpService extends BaseMicroService implements IPhoneService {
 
     protected PhoneHttpService(RestTemplate restTemplate) {
-        super("localhost:8080", restTemplate);
+        super("45.141.102.46:8080", restTemplate);
     }
 
     @Override

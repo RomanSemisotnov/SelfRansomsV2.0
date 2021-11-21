@@ -1,18 +1,12 @@
 package ru.marketboost.ransom.exceptions;
 
+import java.util.UUID;
+
 public class CouldntGetRightPhoneCodeException extends Exception{
 
-    public CouldntGetRightPhoneCodeException(Throwable throwable) {
-        super(throwable);
-    }
 
-    public CouldntGetRightPhoneCodeException(String message) {
-        super(message);
-
-    }
-
-    public CouldntGetRightPhoneCodeException(String message, Throwable throwable) {
-        super(message, throwable);
+    public CouldntGetRightPhoneCodeException(UUID id, int count) {
+        super(String.format("Cant get not expired phone code on login page by %s times, sessionId: %s", count, id));
     }
 
 }

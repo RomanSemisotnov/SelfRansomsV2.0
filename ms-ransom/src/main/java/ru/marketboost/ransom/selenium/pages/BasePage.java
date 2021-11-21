@@ -2,6 +2,7 @@ package ru.marketboost.ransom.selenium.pages;
 
 import io.vavr.control.Either;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -10,10 +11,9 @@ import org.springframework.context.ApplicationContext;
 import ru.marketboost.library.common.http.services.phones.PhoneHttpService;
 import ru.marketboost.ransom.exceptions.OneOfTwoElementNotFoundException;
 import ru.marketboost.ransom.services.captcha.SolveCaptchaService;
-import ru.marketboost.ransom.utils.Randomizer;
+import ru.marketboost.library.common.utils.Randomizer;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiPredicate;
 
@@ -21,18 +21,17 @@ import java.util.function.BiPredicate;
 public abstract class BasePage {
 
     protected static final String WILDBERRIES_URL = "https://wildberries.ru";
-    protected static final int SHORTEST_WAITING_DURATION = 1;
-    protected static final int SHORT_WAITING_DURATION = 2;
-    protected static final int BASE_WAITING_DURATION = 6;
 
     protected final WebDriver driver;
     protected ApplicationContext applicationContext;
     protected SolveCaptchaService solveCaptchaService;
     protected PhoneHttpService phoneHttpService;
+    protected UUID sessionId;
 
-    public BasePage(WebDriver driver, ApplicationContext applicationContext) {
+    public BasePage(WebDriver driver, ApplicationContext applicationContext, UUID sessionId) {
         this.driver = driver;
         this.applicationContext = applicationContext;
+        this.sessionId = sessionId;
         init();
     }
 
@@ -42,7 +41,7 @@ public abstract class BasePage {
     }
 
     protected Optional<WebElement> waitLoadingElem(By location) {
-        return waitLoadingElem(location, BASE_WAITING_DURATION);
+        return waitLoadingElem(location, randomBaseDuration());
     }
 
     protected Optional<WebElement> waitLoadingElem(By location, int duration) {
@@ -57,16 +56,25 @@ public abstract class BasePage {
         }
     }
 
+    protected WebElement findElement(By location) {
+        return new WebDriverWait(driver, randomBaseDuration())
+                .until(ExpectedConditions.elementToBeClickable(location));
+    }
+
     protected WebElement moveAndClick(By location) {
-        WebElement element = new WebDriverWait(driver, BASE_WAITING_DURATION)
+        WebElement element = new WebDriverWait(driver, randomBaseDuration())
                 .until(ExpectedConditions.elementToBeClickable(location));
         moveAndClick(element);
         return element;
     }
 
     protected WebElement moveAndClickAndFill(By location, String str) {
+        return moveAndClickAndFill(location, str, false);
+    }
+
+    protected WebElement moveAndClickAndFill(By location, String str, boolean enterInTheEnd) {
         WebElement element = moveAndClick(location);
-        fillInput(element, str);
+        fillInput(element, str, enterInTheEnd);
         return element;
     }
 
@@ -74,7 +82,7 @@ public abstract class BasePage {
         new Actions(driver).moveToElement(element).click().perform();
     }
 
-    private void fillInput(WebElement field, String text) {
+    private void fillInput(WebElement field, String text, boolean enterInTheEnd) {
         try {
             for (int i = 0; i < text.length(); i++) {
                 field.sendKeys(String.valueOf(text.charAt(i)));
@@ -83,18 +91,16 @@ public abstract class BasePage {
         } catch (InterruptedException e) {
             throw new RuntimeException("interrupting in filling input with text: " + text, e);
         }
+        if (enterInTheEnd)
+            field.sendKeys(Keys.ENTER);
     }
 
     protected Optional<WebElement> checkElementExist(By locator, int duration) {
         return waitLoadingElem(locator, duration);
     }
 
-    protected Optional<WebElement> checkElementExist(By locator) {
-        return waitLoadingElem(locator);
-    }
-
     protected Either<WebElement, WebElement> findOneOfTwoElements(By first, By second) throws OneOfTwoElementNotFoundException {
-        boolean result = new WebDriverWait(driver, BASE_WAITING_DURATION)
+        boolean result = new WebDriverWait(driver, randomBaseDuration())
                 .until(ExpectedConditions.or(
                                 ExpectedConditions.elementToBeClickable(first),
                                 ExpectedConditions.elementToBeClickable(second)
@@ -104,7 +110,7 @@ public abstract class BasePage {
         if (!result)
             throw new OneOfTwoElementNotFoundException(String.format(
                     "cant find for %s seconds %s or %s",
-                    BASE_WAITING_DURATION,
+                    randomBaseDuration(),
                     first,
                     second
             ));
@@ -121,7 +127,7 @@ public abstract class BasePage {
     }
 
     protected Optional<WebElement> findElemWithText(By locator, String match, BiPredicate<String, String> pr) {
-        return findElemWithText(locator, match, pr, BASE_WAITING_DURATION);
+        return findElemWithText(locator, match, pr, randomBaseDuration());
     }
 
     protected Optional<WebElement> findElemWithText(By locator, String match, BiPredicate<String, String> pr, int duration) {
@@ -132,12 +138,17 @@ public abstract class BasePage {
                 .findAny();
     }
 
+    protected List<WebElement> findElements(By locator) {
+        waitLoadingElem(locator);
+        return driver.findElements(locator);
+    }
+
     protected Optional<WebElement> findElemWithAttribute(By locator, String attribute, String attValue) {
-        return findElemWithAttribute(locator, attribute, attValue, Objects::equals, BASE_WAITING_DURATION);
+        return findElemWithAttribute(locator, attribute, attValue, Objects::equals, randomBaseDuration());
     }
 
     protected Optional<WebElement> findElemWithAttribute(By locator, String attribute, String attValue, BiPredicate<String, String> pr) {
-        return findElemWithAttribute(locator, attribute, attValue, pr, BASE_WAITING_DURATION);
+        return findElemWithAttribute(locator, attribute, attValue, pr, randomBaseDuration());
     }
 
     protected Optional<WebElement> findElemWithAttribute(By locator, String attribute, String attValue, BiPredicate<String, String> pr, int duration) {
@@ -146,6 +157,55 @@ public abstract class BasePage {
                 .stream()
                 .filter(el -> pr.test(el.getAttribute(attribute), attValue))
                 .findAny();
+    }
+
+    protected int randomShortDuration() {
+        return (int) (Math.random() * (3 - 1)) + 1;
+    }
+
+    protected int randomBaseDuration() {
+        return (int) (Math.random() * (6 - 3)) + 3;
+    }
+
+    protected <T> List<T> getRandomElements(List<T> elements, int min, int max) {
+        Random random = new Random();
+        List<T> randomElements = new ArrayList<>();
+
+        int fakeProductView = Randomizer.randomBetween(min, max);
+        for (int i = 0; i < fakeProductView; i++) {
+            randomElements.add(elements.get(random.nextInt(elements.size())));
+        }
+        return randomElements;
+    }
+
+    protected void scrollToAndClick(WebElement element) {
+        scrollTo(element);
+        moveAndClick(element);
+    }
+
+    protected void scrollTo(WebElement element) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+    }
+
+    protected WebElement scrollToAndClick(By by) {
+        WebElement el = findElement(by);
+        scrollToAndClick(el);
+        return el;
+    }
+
+    protected WebElement scrollTo(By by) {
+        WebElement el = findElement(by);
+        scrollTo(el);
+        return el;
+    }
+
+    protected void randomDelay() throws InterruptedException {
+        randomDelay(0.3, 1.20);
+    }
+
+    protected void randomDelay(double min, double max) throws InterruptedException {
+        long t = (long) (Randomizer.randomBetween(min, max) * 1000);
+        Thread.sleep(t);
     }
 
 }
