@@ -164,7 +164,11 @@ public abstract class BasePage {
     }
 
     protected int randomBaseDuration() {
-        return (int) (Math.random() * (6 - 3)) + 3;
+        return (int) (Math.random() * (7 - 4)) + 4;
+    }
+
+    protected int randomLongDuration() {
+        return (int) (Math.random() * (12 - 8)) + 8;
     }
 
     protected <T> List<T> getRandomElements(List<T> elements, int min, int max) {

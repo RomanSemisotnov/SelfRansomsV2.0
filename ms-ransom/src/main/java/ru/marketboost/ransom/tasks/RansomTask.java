@@ -40,13 +40,13 @@ public class RansomTask extends BaseTask implements Runnable {
 
             HomePage homePageWithoutAuth = new HomePage(driver, applicationContext, sessionId);
 
-            homePageWithoutAuth.findArticle(ransomRequest.getSearch(), ransomRequest.getVendorCode());
+       //     homePageWithoutAuth.findArticle(ransomRequest.getSearch(), ransomRequest.getVendorCode());
 
-            // LoginPage loginPage = homePageWithoutAuth.goToLoginPage();
+            LoginPage loginPage = homePageWithoutAuth.goToLoginPage();
 
-            // HomePage homePageWithAuth = loginPage.doLogin(ransomRequest.getPhoneNumber());
+            HomePage homePageWithAuth = loginPage.doLogin(ransomRequest.getPhoneNumber());
 
-            //ProfilePage profilePageWithAuth = homePageWithAuth.goToProfilePage();
+            ProfilePage profilePageWithAuth = homePageWithAuth.goToProfilePage();
 
             System.out.println(123);
         } catch (Exception e) {

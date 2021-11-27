@@ -10,6 +10,7 @@ import ru.marketboost.ransom.exceptions.UnknownSituationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class HomePage extends BasePage {
 
@@ -52,12 +53,10 @@ public class HomePage extends BasePage {
 
         moveAndClickAndFill(searchField, search, true);
 
-        findAndScrollAndClickToProduct(driver, vendorCode);
-
-        System.out.println(123);
+        lookFakesAndAddToCardReal(driver, vendorCode);
     }
 
-    private void findAndScrollAndClickToProduct(WebDriver driver, String vendorCode) throws Exception {
+    private void lookFakesAndAddToCardReal(WebDriver driver, String vendorCode) throws Exception {
         int maxPageNum = 10;
         List<WebElement> productList = findElements(productCardElements);
         randomDelay();
@@ -68,8 +67,15 @@ public class HomePage extends BasePage {
 
         int pageNum = 0;
         if (neededProduct.isPresent()) {
-            List<WebElement> fakeViews = getRandomElements(productList, 2, 4);
-            for (WebElement fakeEl : fakeViews) {
+            List<String> fakeHrefs = getRandomElements(productList, 1, 1)
+                    .stream()
+                    .map(el -> el.getAttribute("href"))
+                    .collect(Collectors.toList());
+            for (String fakeHref : fakeHrefs) {
+                WebElement fakeEl = productList.stream()
+                        .filter(el -> el.getAttribute("href").equals(fakeHref))
+                        .findAny().get();
+
                 scrollTo(fakeEl);
                 randomDelay();
 
@@ -80,7 +86,13 @@ public class HomePage extends BasePage {
                 randomDelay();
 
                 driver.navigate().back();
+
+                productList = findElements(productCardElements);
             }
+
+            moveAndClick(findElemWithAttribute(productCardElements, "href", "catalog/" + vendorCode + "/detail", String::contains)
+                    .orElseThrow(() -> new Exception("fuck!!! need to buy not found")));
+            (new ProductCardPage(driver, applicationContext, sessionId)).viewAndAddToCard();
         } else {
             if (pageNum++ > maxPageNum) {
                 throw new MoreThan10PageException();// потом переделать
